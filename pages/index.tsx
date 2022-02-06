@@ -11,11 +11,11 @@ import { AngerInterpreter } from "../interpreters/AngerInterpreter"
 export default function Home() {
     const [input, setInput] = useState("")
     const [parsedResults, setParsedResults] = useState<NormalizedMatrix>()
-    const [isCopyLoading, setIsCopyLoading] =
-        useState<boolean>(false)
+    const [isCopyLoading, setIsCopyLoading] = useState<boolean>(false)
     const [interpretedResults, setInterpretedResults] =
         useState<Interpretation>()
 
+    const transformationsRef = useRef<HTMLDivElement>()
     const interpretedResultsRef = useRef<HTMLDivElement>()
 
     useEffect(() => {
@@ -34,8 +34,8 @@ export default function Home() {
             setParsedResults(null)
             return
         }
-        console.log({ res })
         setParsedResults(res)
+        scrollToTransformations()
     }
 
     const copyToClipboard = () => {
@@ -54,6 +54,12 @@ export default function Home() {
     const scrollToResults = () => {
         if (interpretedResultsRef && interpretedResultsRef.current) {
             interpretedResultsRef.current.scrollIntoView({ behavior: "smooth" })
+        }
+    }
+
+    const scrollToTransformations = () => {
+        if (transformationsRef && transformationsRef.current) {
+            transformationsRef.current.scrollIntoView({ behavior: "smooth" })
         }
     }
 
@@ -115,16 +121,16 @@ export default function Home() {
                                 Parse Results
                             </button>
                         </div>
-                        <div className="p-2 w-full pt-8 mt-8 border-t border-gray-200 text-center">
-                            {parsedResults && (
+                        {parsedResults && (
+                            <div className="p-2 w-full pt-8 mt-8 border-t border-gray-200 text-center">
                                 <div>
-                                    <h2 className="sm:text-2xl text-xl font-medium title-font mb-4 text-gray-900">
+                                    <h2 ref={transformationsRef} className="sm:text-2xl text-xl font-medium title-font mb-4 text-gray-900">
                                         Transformation Options
                                     </h2>
                                     <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
-                                        Choose the type of transformation you&apos;d
-                                        like to apply. Scroll to see all your
-                                        options
+                                        Choose the type of transformation
+                                        you&apos;d like to apply. Scroll to see
+                                        all your options
                                     </p>
                                     <div className="flex overflow-x-auto">
                                         <TransformationCard
@@ -173,17 +179,21 @@ export default function Home() {
                                             </div>
                                             <div className="p-2 w-full">
                                                 <button
-                                                    className={"flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg"}
+                                                    className={
+                                                        "flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg"
+                                                    }
                                                     onClick={copyToClipboard}
                                                 >
-                                                    {isCopyLoading ? "Copied ✅" : "Copy Transformation"}
+                                                    {isCopyLoading
+                                                        ? "Copied ✅"
+                                                        : "Copy Transformation"}
                                                 </button>
                                             </div>
                                         </div>
                                     )}
                                 </div>
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
