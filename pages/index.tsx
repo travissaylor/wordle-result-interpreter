@@ -11,12 +11,12 @@ import { AngerInterpreter } from "../interpreters/AngerInterpreter"
 export default function Home() {
     const [input, setInput] = useState("")
     const [parsedResults, setParsedResults] = useState<NormalizedMatrix>()
-    const [showTransformations, setShowTransformations] =
+    const [isCopyLoading, setIsCopyLoading] =
         useState<boolean>(false)
     const [interpretedResults, setInterpretedResults] =
         useState<Interpretation>()
 
-    const interpretedResultsRef = useRef()
+    const interpretedResultsRef = useRef<HTMLDivElement>()
 
     useEffect(() => {
         setInterpretedResults(null)
@@ -39,13 +39,16 @@ export default function Home() {
     }
 
     const copyToClipboard = () => {
+        setIsCopyLoading(true)
         let resultString = ""
         interpretedResults.forEach((row) => {
             const stringRow = row.join("") + "\n"
             resultString += stringRow
         })
         navigator.clipboard.writeText(resultString)
-        console.log("Copied to clipboard")
+        setTimeout(() => {
+            setIsCopyLoading(false)
+        }, 1000)
     }
 
     const scrollToResults = () => {
@@ -126,7 +129,7 @@ export default function Home() {
                                     <div className="flex overflow-x-auto">
                                         <TransformationCard
                                             name="Emotionalize"
-                                            description="Adds some drama to your results"
+                                            description="Adds some unique drama to each line"
                                             emoji={"🤔"}
                                             onTransform={emotionalize}
                                         />
@@ -170,10 +173,10 @@ export default function Home() {
                                             </div>
                                             <div className="p-2 w-full">
                                                 <button
-                                                    className="flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg"
+                                                    className={"flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg"}
                                                     onClick={copyToClipboard}
                                                 >
-                                                    Copy Results
+                                                    {isCopyLoading ? "Copied ✅" : "Copy Transformation"}
                                                 </button>
                                             </div>
                                         </div>
