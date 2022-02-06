@@ -90,7 +90,7 @@ export default function Home() {
                     </h1>
                     <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
                         Paste your wordle results and select the transformation
-                        you'd like to apply to your results
+                        you&apos;d like to apply to your results
                     </p>
                 </div>
                 <div className="lg:w-1/2 md:w-2/3 mx-auto">
@@ -122,7 +122,7 @@ export default function Home() {
                                         Transformation Options
                                     </h2>
                                     <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
-                                        Choose the type of transformation you'd
+                                        Choose the type of transformation you&apos;d
                                         like to apply. Scroll to see all your
                                         options
                                     </p>
