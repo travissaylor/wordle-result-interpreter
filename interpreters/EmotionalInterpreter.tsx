@@ -10,6 +10,10 @@ export class EmotionalInterpreter implements ResultInterpreter {
 
     row1(row: string[]): string[] {
         return row.map((col) => {
+            if (col == "⬛") {
+                return "🤔"
+            }
+
             if (col == "🟩") {
                 return "🍀"
             }

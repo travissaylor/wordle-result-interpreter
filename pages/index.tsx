@@ -1,20 +1,39 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { NormalizedMatrix, parseResults } from "../lib/resultParser"
 import { Interpretation, interpretResults } from "../lib/resultInterpreter"
 import { EmotionalInterpreter } from "../interpreters/EmotionalInterpreter"
+import Modal from "../components/Modal"
+import TransformationCard from "../components/TransformationCard"
+import { HeartInterpreter } from "../interpreters/HeartInterpreter"
+import { ColorBlindInterpreter } from "../interpreters/ColorBlindInterpreter"
+import { AngerInterpreter } from "../interpreters/AngerInterpreter"
 
 export default function Home() {
     const [input, setInput] = useState("")
     const [parsedResults, setParsedResults] = useState<NormalizedMatrix>()
+    const [showTransformations, setShowTransformations] =
+        useState<boolean>(false)
     const [interpretedResults, setInterpretedResults] =
         useState<Interpretation>()
+
+    const interpretedResultsRef = useRef()
 
     useEffect(() => {
         setInterpretedResults(null)
     }, [parsedResults])
 
+    useEffect(() => {
+        if (interpretedResults && interpretedResults.length > 0) {
+            scrollToResults()
+        }
+    }, [interpretedResults])
+
     const submitResults = () => {
         const res = parseResults(input)
+        if (res.length === 0) {
+            setParsedResults(null)
+            return
+        }
         console.log({ res })
         setParsedResults(res)
     }
@@ -23,15 +42,39 @@ export default function Home() {
         let resultString = ""
         interpretedResults.forEach((row) => {
             const stringRow = row.join("") + "\n"
-            resultString += stringRow;
+            resultString += stringRow
         })
         navigator.clipboard.writeText(resultString)
         console.log("Copied to clipboard")
     }
 
+    const scrollToResults = () => {
+        if (interpretedResultsRef && interpretedResultsRef.current) {
+            interpretedResultsRef.current.scrollIntoView({ behavior: "smooth" })
+        }
+    }
+
     const emotionalize = () => {
         setInterpretedResults(
             interpretResults(parsedResults, new EmotionalInterpreter())
+        )
+    }
+
+    const hearts = () => {
+        setInterpretedResults(
+            interpretResults(parsedResults, new HeartInterpreter())
+        )
+    }
+
+    const colorBlind = () => {
+        setInterpretedResults(
+            interpretResults(parsedResults, new ColorBlindInterpreter())
+        )
+    }
+
+    const anger = () => {
+        setInterpretedResults(
+            interpretResults(parsedResults, new AngerInterpreter())
         )
     }
 
@@ -70,32 +113,51 @@ export default function Home() {
                             </button>
                         </div>
                         <div className="p-2 w-full pt-8 mt-8 border-t border-gray-200 text-center">
-                            <h2 className="sm:text-2xl text-xl font-medium title-font mb-4 text-gray-900">
-                                Parsed Results
-                            </h2>
                             {parsedResults && (
                                 <div>
-                                    <div className="text-3xl mb-4">
-                                        {parsedResults.map((row, index) => (
-                                            <div key={index}>
-                                                {row.map((col) => col)}
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <div className="p-2 w-full">
-                                        <button
-                                            className="flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg"
-                                            onClick={emotionalize}
-                                        >
-                                            Emotionalize
-                                        </button>
+                                    <h2 className="sm:text-2xl text-xl font-medium title-font mb-4 text-gray-900">
+                                        Transformation Options
+                                    </h2>
+                                    <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
+                                        Choose the type of transformation you'd
+                                        like to apply. Scroll to see all your
+                                        options
+                                    </p>
+                                    <div className="flex overflow-x-auto">
+                                        <TransformationCard
+                                            name="Emotionalize"
+                                            description="Adds some drama to your results"
+                                            emoji={"🤔"}
+                                            onTransform={emotionalize}
+                                        />
+                                        <TransformationCard
+                                            name="Hearts"
+                                            description="Love is in the air"
+                                            emoji={"💚"}
+                                            onTransform={hearts}
+                                        />
+                                        <TransformationCard
+                                            name="Color Blind"
+                                            description="Add strong contrast"
+                                            emoji={"🎨"}
+                                            onTransform={colorBlind}
+                                        />
+                                        <TransformationCard
+                                            name="Anger"
+                                            description="Did you have a rough time with this one?"
+                                            emoji={"🤬"}
+                                            onTransform={anger}
+                                        />
                                     </div>
                                     {interpretedResults && (
                                         <div className="p-2 w-full pt-8 mt-8 border-t border-gray-200 text-center">
                                             <h2 className="sm:text-2xl text-xl font-medium title-font mb-4 text-gray-900">
                                                 Transformed Results
                                             </h2>
-                                            <div className="text-3xl mb-4">
+                                            <div
+                                                ref={interpretedResultsRef}
+                                                className="text-3xl mb-4"
+                                            >
                                                 {interpretedResults.map(
                                                     (row, index) => (
                                                         <div key={index}>
