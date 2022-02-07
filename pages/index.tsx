@@ -2,11 +2,12 @@ import { useEffect, useRef, useState } from "react"
 import { NormalizedMatrix, parseResults } from "../lib/resultParser"
 import { Interpretation, interpretResults } from "../lib/resultInterpreter"
 import { EmotionalInterpreter } from "../interpreters/EmotionalInterpreter"
-import Modal from "../components/Modal"
 import TransformationCard from "../components/TransformationCard"
 import { HeartInterpreter } from "../interpreters/HeartInterpreter"
 import { ColorBlindInterpreter } from "../interpreters/ColorBlindInterpreter"
 import { AngerInterpreter } from "../interpreters/AngerInterpreter"
+import Header from "../components/Header"
+import Head from "next/head"
 
 export default function Home() {
     const [input, setInput] = useState("")
@@ -20,6 +21,9 @@ export default function Home() {
 
     useEffect(() => {
         setInterpretedResults(null)
+        if (parsedResults && parsedResults.length > 0) {
+            scrollToTransformations()
+        }
     }, [parsedResults])
 
     useEffect(() => {
@@ -35,7 +39,6 @@ export default function Home() {
             return
         }
         setParsedResults(res)
-        scrollToTransformations()
     }
 
     const copyToClipboard = () => {
@@ -89,10 +92,27 @@ export default function Home() {
 
     return (
         <section className="text-gray-600 body-font relative">
+            <Head>
+                <title>WORDLExport</title>
+                <meta
+                    name="description"
+                    content="Wordle Results That Stand Out"
+                />
+                <meta
+                    name="viewport"
+                    content="initial-scale=1.0, width=device-width"
+                />
+                <meta property="og:title" content="WORDLExport" />
+                <meta
+                    property="og:description"
+                    content="Wordle Results That Stand Out"
+                />
+            </Head>
+            <Header />
             <div className="container px-5 py-24 mx-auto">
                 <div className="flex flex-col text-center w-full mb-12">
                     <h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">
-                        Make Your Wordle Results Stand Out
+                        Wordle Results That Stand Out
                     </h1>
                     <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
                         Paste your wordle results and select the transformation
@@ -124,7 +144,10 @@ export default function Home() {
                         {parsedResults && (
                             <div className="p-2 w-full pt-8 mt-8 border-t border-gray-200 text-center">
                                 <div>
-                                    <h2 ref={transformationsRef} className="sm:text-2xl text-xl font-medium title-font mb-4 text-gray-900">
+                                    <h2
+                                        ref={transformationsRef}
+                                        className="sm:text-2xl text-xl font-medium title-font mb-4 text-gray-900"
+                                    >
                                         Transformation Options
                                     </h2>
                                     <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
