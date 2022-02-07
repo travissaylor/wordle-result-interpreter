@@ -95,12 +95,14 @@ export class EmotionalInterpreter implements ResultInterpreter {
     }
 
     row6(row: string[]): string[] {
-        return row.map((col) => {
+        let greenCount = 0
+        const transformedRow = row.map((col) => {
             if (col == "⬛") {
                 return "😵"
             }
 
             if (col == "🟩") {
+                greenCount++
                 return "❎"
             }
             if (col == "🟨") {
@@ -109,5 +111,13 @@ export class EmotionalInterpreter implements ResultInterpreter {
 
             return col
         })
+
+        if (greenCount === transformedRow.length) {
+            return row.map((col) => (
+                "🍀"
+            ))
+        }
+
+        return transformedRow
     }
 }

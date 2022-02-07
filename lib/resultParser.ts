@@ -1,8 +1,8 @@
 export type NormalizedResultCol = "🟩" | "🟨" | "⬛"
 export type NormalizedMatrix = NormalizedResultCol[][]
 
-const MAX_ROWS = 6
-const MAX_COLS = 5
+export const MAX_ROWS = 6
+export const MAX_COLS = 5
 
 export function parseResults(results: string): NormalizedMatrix {
     const normalizeResults = (results: string): string => {
